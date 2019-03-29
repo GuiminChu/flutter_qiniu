@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+
+import 'package:flutter_qiniu/entity/file_path_entity.dart';
+export 'package:flutter_qiniu/entity/file_path_entity.dart';
 
 enum QNFixedZone {
   zone0, // 华东
@@ -32,5 +36,26 @@ class FlutterQiniu {
 
     var result = await _channel.invokeMethod('upload', map);
     return result;
+  }
+
+  Future<bool> uploadData(Uint8List data, String key, String token) async {
+    Map<String, dynamic> map = {
+      "data": data,
+      "key": key,
+      "token": token,
+      "zone": zone.index.toString()
+    };
+
+    var result = await _channel.invokeMethod('uploadData', map);
+    return result;
+  }
+
+  Future<List<bool>> uploadFiles(List<FilePathEntity> entities) async {
+    var uploads = entities.map((entity) {
+      return upload(entity.filePath, entity.key, entity.token);
+    });
+
+    var results = await Future.wait(uploads);
+    return results;
   }
 }

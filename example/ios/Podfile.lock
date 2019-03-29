@@ -1,9 +1,9 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_qiniu (0.0.1):
+  - flutter_qiniu (0.0.3):
     - Flutter
     - Qiniu
-  - HappyDNS (0.3.14)
+  - HappyDNS (0.3.15)
   - Qiniu (7.2.5):
     - HappyDNS (~> 0.3)
 
@@ -23,11 +23,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_qiniu/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_qiniu: cfe457961363614e443439a4d7f5de2a903fb8a1
-  HappyDNS: dc6a164ee81979093123c241c6353bcf0218add6
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_qiniu: c4aa57e4b5462000f069981377d9f770beffa6a8
+  HappyDNS: 00c15e651a347206e58a20503a32a5564589b56a
   Qiniu: 909b408ee489ea54827e9717be90b94bc9dfbc48
 
 PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

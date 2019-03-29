@@ -17,6 +17,8 @@ public class SwiftFlutterQiniuPlugin: NSObject, FlutterPlugin {
             result("iOS " + UIDevice.current.systemVersion)
         } else if call.method == "upload" {
             upload(arguments: call.arguments, result: result)
+        } else if call.method == "uploadData" {
+            uploadData(arguments: call.arguments, result: result)
         }
     }
     
@@ -35,9 +37,37 @@ public class SwiftFlutterQiniuPlugin: NSObject, FlutterPlugin {
             builder?.setZone(self.getZone(raw: zoneRaw))
         }
 
-        var uploadManager = QNUploadManager(configuration: config)
+        let uploadManager = QNUploadManager(configuration: config)
 
         uploadManager?.putFile(filePath, key: key, token: token, complete: { (responseInfo, key, dict) in
+            print("上传结果：")
+            print(dict)
+            if dict == nil {
+                result(false)
+            } else {
+                result(true)
+            }
+        }, option: nil)
+    }
+    
+    func uploadData(arguments: Any?, result: @escaping FlutterResult) {
+        guard let arguments = arguments as? [String: Any],
+            let flutterData = arguments["data"] as? FlutterStandardTypedData,
+            let key = arguments["key"] as? String,
+            let token = arguments["token"] as? String else {
+                result(false)
+                return
+        }
+        
+        let config = QNConfiguration.build { builder in
+            // 设置区域，默认华东
+            let zoneRaw = arguments["zone"] as? String ?? "0"
+            builder?.setZone(self.getZone(raw: zoneRaw))
+        }
+        
+        let uploadManager = QNUploadManager(configuration: config)
+        
+        uploadManager?.put(flutterData.data, key: key, token: token, complete: { (responseInfo, key, dict) in
             print("上传结果：")
             print(dict)
             if dict == nil {
