@@ -5,16 +5,25 @@ A new flutter plugin project for Qiniu.
 ## Getting Started
 
 ```dart
-/// key: 保存在服务器上的资源唯一标识
-/// token: 服务器分配的 token
-Future<bool> _onUpload(File file, String key, String token) async {
+/// 单个文件上传
+///
+/// [file] 文件
+/// [key] 保存在服务器上的资源唯一标识
+/// [token] 服务器分配的 token
+Future<String> _onUpload(File file, String key, String token) async {
 
     final qiniu = FlutterQiniu(zone: QNFixedZone.zone2);
+    String resultKey = await qiniu.upload(file.path, key, token);
 
-    //上传文件
-    bool result = await qiniu.upload(file.path, key, token);
+    return resultKey;
+}
 
-    return result;
+/// 多个文件上传
+Future<List<String>> _onUploadFiles(List<FilePathEntity> entities) async {
+    final qiniu = FlutterQiniu(zone: QNFixedZone.zone1);
+    List<String> resultKeys = await qiniu.uploadFiles(entities);
+
+    return resultKeys;
 }
 ```
 

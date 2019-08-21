@@ -1,7 +1,5 @@
 package cn.fg.flutter_qiniu;
 
-import android.util.Log;
-
 import com.qiniu.android.common.FixedZone;
 import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
@@ -31,10 +29,8 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
-        if (call.method.equals("getPlatformVersion")) {
-            result.success("Android " + android.os.Build.VERSION.RELEASE);
-        } else if (call.method.equals("upload")) {
-            upload(call, result);
+        if (call.method.equals("uploadFile")) {
+            uploadFile(call, result);
         } else if (call.method.equals("uploadData")) {
             uploadData(call, result);
         } else {
@@ -42,7 +38,7 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
         }
     }
 
-    private void upload(MethodCall call, final Result result) {
+    private void uploadFile(MethodCall call, final Result result) {
         String filePath = call.argument("filePath");
         String key = call.argument("key");
         String token = call.argument("token");
@@ -64,16 +60,12 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                 new UpCompletionHandler() {
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject res) {
-                        //res包含hash、key等信息，具体字段取决于上传策略的设置
+                        // res包含hash、key等信息，具体字段取决于上传策略的设置
                         if (info.isOK()) {
-                            Log.i("qiniu", "Upload Success");
+                            result.success(key);
                         } else {
-                            Log.i("qiniu", "Upload Fail");
-                            //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
+                            result.success("");
                         }
-                        Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
-
-                        result.success(info.isOK());
                     }
                 }, null);
     }
@@ -100,16 +92,13 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                 new UpCompletionHandler() {
                     @Override
                     public void complete(String key, ResponseInfo info, JSONObject res) {
-                        //res包含hash、key等信息，具体字段取决于上传策略的设置
+                        // res包含hash、key等信息，具体字段取决于上传策略的设置
                         if (info.isOK()) {
-                            Log.i("qiniu", "Upload Success");
+                            result.success(key);
                         } else {
-                            Log.i("qiniu", "Upload Fail");
                             //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
+                            result.success("");
                         }
-                        Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
-
-                        result.success(info.isOK());
                     }
                 }, null);
     }

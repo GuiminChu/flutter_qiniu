@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_qiniu/flutter_qiniu.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_qiniu');
@@ -13,9 +12,5 @@ void main() {
 
   tearDown(() {
     channel.setMockMethodCallHandler(null);
-  });
-
-  test('getPlatformVersion', () async {
-    expect(await FlutterQiniu.platformVersion, '42');
   });
 }

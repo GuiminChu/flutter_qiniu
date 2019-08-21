@@ -21,12 +21,7 @@ class FlutterQiniu {
 
   FlutterQiniu({this.zone});
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
-  Future<bool> upload(String filePath, String key, String token) async {
+  Future<String> uploadFile(String filePath, String key, String token) async {
     Map<String, String> map = {
       "filePath": filePath,
       "key": key,
@@ -34,11 +29,11 @@ class FlutterQiniu {
       "zone": zone.index.toString()
     };
 
-    var result = await _channel.invokeMethod('upload', map);
+    var result = await _channel.invokeMethod('uploadFile', map);
     return result;
   }
 
-  Future<bool> uploadData(Uint8List data, String key, String token) async {
+  Future<String> uploadData(Uint8List data, String key, String token) async {
     Map<String, dynamic> map = {
       "data": data,
       "key": key,
@@ -50,9 +45,9 @@ class FlutterQiniu {
     return result;
   }
 
-  Future<List<bool>> uploadFiles(List<FilePathEntity> entities) async {
+  Future<List<String>> uploadFiles(List<FilePathEntity> entities) async {
     var uploads = entities.map((entity) {
-      return upload(entity.filePath, entity.key, entity.token);
+      return uploadFile(entity.filePath, entity.key, entity.token);
     });
 
     var results = await Future.wait(uploads);

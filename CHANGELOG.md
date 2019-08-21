@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Returns the result keys.
+
 ## 0.0.3
 
 * Add multiple files upload.

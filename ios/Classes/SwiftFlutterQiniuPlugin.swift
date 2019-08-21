@@ -10,42 +10,35 @@ public class SwiftFlutterQiniuPlugin: NSObject, FlutterPlugin {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        print(call.arguments)
-        print(call.method)
-    
-        if call.method == "getPlatformVersion" {
-            result("iOS " + UIDevice.current.systemVersion)
-        } else if call.method == "upload" {
-            upload(arguments: call.arguments, result: result)
+        if call.method == "uploadFile" {
+            uploadFile(arguments: call.arguments, result: result)
         } else if call.method == "uploadData" {
             uploadData(arguments: call.arguments, result: result)
         }
     }
     
-    func upload(arguments: Any?, result: @escaping FlutterResult) {
+    func uploadFile(arguments: Any?, result: @escaping FlutterResult) {
         guard let arguments = arguments as? [String: String],
             let filePath = arguments["filePath"],
             let key = arguments["key"],
             let token = arguments["token"] else {
-                result(false)
+                result("")
                 return
         }
-    
+        
         let config = QNConfiguration.build { builder in
             // 设置区域，默认华东
             let zoneRaw = arguments["zone"] ?? "0"
             builder?.setZone(self.getZone(raw: zoneRaw))
         }
-
+        
         let uploadManager = QNUploadManager(configuration: config)
-
+        
         uploadManager?.putFile(filePath, key: key, token: token, complete: { (responseInfo, key, dict) in
-            print("上传结果：")
-            print(dict)
             if dict == nil {
-                result(false)
+                result("")
             } else {
-                result(true)
+                result(key!)
             }
         }, option: nil)
     }
@@ -55,7 +48,7 @@ public class SwiftFlutterQiniuPlugin: NSObject, FlutterPlugin {
             let flutterData = arguments["data"] as? FlutterStandardTypedData,
             let key = arguments["key"] as? String,
             let token = arguments["token"] as? String else {
-                result(false)
+                result("")
                 return
         }
         
@@ -68,12 +61,10 @@ public class SwiftFlutterQiniuPlugin: NSObject, FlutterPlugin {
         let uploadManager = QNUploadManager(configuration: config)
         
         uploadManager?.put(flutterData.data, key: key, token: token, complete: { (responseInfo, key, dict) in
-            print("上传结果：")
-            print(dict)
             if dict == nil {
-                result(false)
+                result("")
             } else {
-                result(true)
+                result(key!)
             }
         }, option: nil)
     }
