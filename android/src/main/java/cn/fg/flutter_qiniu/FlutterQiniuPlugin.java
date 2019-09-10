@@ -49,8 +49,9 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                 .putThreshhold(1024 * 1024)   // 启用分片上传阀值。默认512K
                 .connectTimeout(10)           // 链接超时。默认10秒
                 .useHttps(true)               // 是否使用https上传域名
+                .dns(null)                    // 禁用外部dns
                 .responseTimeout(60)          // 服务器响应超时。默认60秒
-                .zone(getZone(zoneRaw))        // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
+                .zone(getZone(zoneRaw))       // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
                 .build();
 
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象
@@ -81,8 +82,9 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                 .putThreshhold(1024 * 1024)   // 启用分片上传阀值。默认512K
                 .connectTimeout(10)           // 链接超时。默认10秒
                 .useHttps(true)               // 是否使用https上传域名
+                .dns(null)                    // 禁用外部dns
                 .responseTimeout(60)          // 服务器响应超时。默认60秒
-                .zone(getZone(zoneRaw))        // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
+                .zone(getZone(zoneRaw))       // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
                 .build();
 
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象

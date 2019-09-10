@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Fix dns bugs in Android.
+
 ## 0.1.1
 
 * Returns the result keys.

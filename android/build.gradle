@@ -34,5 +34,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.qiniu:qiniu-android-sdk:7.3.+'
+    implementation 'com.qiniu:qiniu-android-sdk:7.3.12'
 }
