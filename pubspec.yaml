@@ -1,11 +1,11 @@
 name: flutter_qiniu
 description: A flutter plugin for uploading files to Qiniu，support single image or multiple image uploads.
-version: 0.1.2
+version: 0.1.3
 author: ChuGuimin <icodd.cn@gmail.com>
 homepage: https://github.com/GuiminChu/flutter_qiniu.git
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:

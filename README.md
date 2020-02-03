@@ -13,6 +13,12 @@ A new flutter plugin project for Qiniu.
 Future<String> _onUpload(File file, String key, String token) async {
 
     final qiniu = FlutterQiniu(zone: QNFixedZone.zone2);
+
+    qiniu.onProgressChanged().listen((dynamic percent) {
+        // 上传进度
+        double p = percent;
+    });
+
     String resultKey = await qiniu.upload(file.path, key, token);
 
     return resultKey;

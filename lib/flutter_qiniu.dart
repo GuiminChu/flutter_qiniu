@@ -15,9 +15,22 @@ enum QNFixedZone {
 }
 
 class FlutterQiniu {
-  static const MethodChannel _channel = const MethodChannel('flutter_qiniu');
+  static const MethodChannel _methodChannel =
+      const MethodChannel('flutter_qiniu_method');
+
+  static const EventChannel _eventChannel =
+      const EventChannel('flutter_qiniu_event');
 
   QNFixedZone zone = QNFixedZone.zone0;
+
+  Stream _onProgressChanged;
+
+  Stream onProgressChanged() {
+    if (_onProgressChanged == null) {
+      _onProgressChanged = _eventChannel.receiveBroadcastStream();
+    }
+    return _onProgressChanged;
+  }
 
   FlutterQiniu({this.zone});
 
@@ -34,7 +47,7 @@ class FlutterQiniu {
       "zone": zone.index.toString()
     };
 
-    var result = await _channel.invokeMethod('uploadFile', map);
+    var result = await _methodChannel.invokeMethod('uploadFile', map);
     return result;
   }
 
@@ -51,7 +64,7 @@ class FlutterQiniu {
       "zone": zone.index.toString()
     };
 
-    var result = await _channel.invokeMethod('uploadData', map);
+    var result = await _methodChannel.invokeMethod('uploadData', map);
     return result;
   }
 

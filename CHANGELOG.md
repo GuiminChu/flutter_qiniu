@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Add upload progress callback.
+
 ## 0.1.2
 
 * Fix dns bugs in Android.

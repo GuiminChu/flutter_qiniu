@@ -4,11 +4,15 @@ import com.qiniu.android.common.FixedZone;
 import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UpCancellationSignal;
 import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
 
 import org.json.JSONObject;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -18,13 +22,22 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * FlutterQiniuPlugin
  */
-public class FlutterQiniuPlugin implements MethodCallHandler {
+public class FlutterQiniuPlugin implements MethodCallHandler, EventChannel.StreamHandler {
+    private EventChannel.EventSink eventSink;
+
+    private boolean isCancelled = false;
+
     /**
      * Plugin registration.
      */
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_qiniu");
-        channel.setMethodCallHandler(new FlutterQiniuPlugin());
+        final MethodChannel methodChannel = new MethodChannel(registrar.messenger(), "flutter_qiniu_method");
+        final EventChannel eventChannel = new EventChannel(registrar.messenger(), "flutter_qiniu_event");
+
+        final FlutterQiniuPlugin instance = new FlutterQiniuPlugin();
+
+        methodChannel.setMethodCallHandler(instance);
+        eventChannel.setStreamHandler(instance);
     }
 
     @Override
@@ -37,6 +50,17 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
             result.notImplemented();
         }
     }
+
+    @Override
+    public void onListen(Object o, EventChannel.EventSink eventSink) {
+        this.eventSink = eventSink;
+    }
+
+    @Override
+    public void onCancel(Object o) {
+        this.eventSink = null;
+    }
+
 
     private void uploadFile(MethodCall call, final Result result) {
         String filePath = call.argument("filePath");
@@ -57,6 +81,20 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象
         UploadManager uploadManager = new UploadManager(config);
 
+        UploadOptions options = new UploadOptions(null, null, false, new UpProgressHandler() {
+            @Override
+            public void progress(String key, double percent) {
+                if (eventSink != null) {
+                    eventSink.success(percent);
+                }
+            }
+        }, new UpCancellationSignal() {
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+        });
+
         uploadManager.put(filePath, key, token,
                 new UpCompletionHandler() {
                     @Override
@@ -68,7 +106,7 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                             result.success("");
                         }
                     }
-                }, null);
+                }, options);
     }
 
     private void uploadData(MethodCall call, final Result result) {
@@ -90,6 +128,20 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象
         UploadManager uploadManager = new UploadManager(config);
 
+        UploadOptions options = new UploadOptions(null, null, false, new UpProgressHandler() {
+            @Override
+            public void progress(String key, double percent) {
+                if (eventSink != null) {
+                    eventSink.success(percent);
+                }
+            }
+        }, new UpCancellationSignal() {
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+        });
+
         uploadManager.put(data, key, token,
                 new UpCompletionHandler() {
                     @Override
@@ -102,7 +154,7 @@ public class FlutterQiniuPlugin implements MethodCallHandler {
                             result.success("");
                         }
                     }
-                }, null);
+                }, options);
     }
 
     private Zone getZone(String raw) {
